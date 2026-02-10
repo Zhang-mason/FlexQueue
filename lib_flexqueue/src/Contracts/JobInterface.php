@@ -8,5 +8,3 @@ interface JobInterface
 {
     public function handle(): void;
 }
-
-

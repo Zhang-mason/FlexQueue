@@ -7,10 +7,9 @@ namespace Mason\FlexQueue\Contracts;
 interface QueueDriverInterface
 {
     /**
-     * @param array<string,mixed> $payload
-     * @param array<string,mixed> $options
+     * @param JobInterface $jobInterface
      */
-    public function push(string $jobClass, array $payload, array $options = []): void;
+    public function push(JobInterface $jobInterface): void;
 
     /**
      * @return array<string,mixed>|null

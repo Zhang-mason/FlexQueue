@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mason\FlexQueue\Support;
 
+use Mason\FlexQueue\Contracts\JobInterface;
 use Mason\FlexQueue\Contracts\QueueDriverInterface;
 
 final class QueueManager
@@ -16,11 +17,10 @@ final class QueueManager
      * @param array<string,mixed> $payload
      * @param array<string,mixed> $options
      */
-    public function dispatch(string $jobClass, array $payload, array $options = []): void
+    public function dispatch(JobInterface $jobInterface): void
     {
-        $this->driver->push($jobClass, $payload, $options);
+        $this->driver->push($jobInterface);
     }
-
     /**
      * @return array<string,mixed>|null
      */
