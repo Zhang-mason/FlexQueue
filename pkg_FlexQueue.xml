@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="4.0" method="upgrade">
+	<name>pkg_FlexQueue</name>
+	<packagename>FlexQueue</packagename>
+	<version>0.1.0</version>
+	<creationDate>2025-10-25</creationDate>
+	<author>Mason</author>
+	<copyright>Copyright (c)</copyright>
+	<packager>Mason</packager>
+    <blockChildUninstall>true</blockChildUninstall>
+	<description>FlexQueue package for Joomla</description>
+	<scriptfile>pkg_script.php</scriptfile>
+	<files>
+        <folder type="library" id="lib_flexqueue">lib_flexqueue</folder>
+        <folder type="plugin" group="system" id="flexqueue">flexqueue</folder>
+	</files>
+</extension>

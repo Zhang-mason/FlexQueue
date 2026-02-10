@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="library" method="upgrade">
+    <name>FlexQueue</name>
+    <libraryname>lib_flexqueue</libraryname>
+    <version>0.1.0</version>
+    <author>Mason</author>
+    <creationDate>2025-10-25</creationDate>
+    <description>Pluggable queue library for Joomla.</description>
+    <namespace path="src">Mason\FlexQueue</namespace>
+
+    <files>
+        <folder>src</folder>
+        <folder>sql</folder>
+        <file>autoload.php</file>
+    </files>
+
+    <scriptfile>scripts/install.php</scriptfile>
+
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <update>
+        <schemas>
+            <schemapath driver="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+</extension>
+

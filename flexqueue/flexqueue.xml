@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade" version="4">
+    <name>plg_system_flexqueue</name>
+    <version>0.1.0</version>
+    <creationDate>2025-10-02</creationDate>
+    <author>Mason</author>
+    <description>PLG_SYSTEM_flexqueue_XML_DESCRIPTION</description>
+    <files>
+		<folder plugin="flexqueue">services</folder>
+        <folder>src</folder>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.plg_system_flexqueue.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_system_flexqueue.sys.ini</language>
+        <language tag="zh-TW">language/zh-TW/zh-TW.plg_system_flexqueue.ini</language>
+        <language tag="zh-TW">language/zh-TW/zh-TW.plg_system_flexqueue.sys.ini</language>
+    </languages>
+    <namespace path="src">Mason\Plugin\System\FlexQueue</namespace>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="driver"
+                    type="list"
+                    default="database"
+                    label="PLG_SYSTEM_flexqueue_FIELD_DRIVER_LABEL"
+                    description="PLG_SYSTEM_flexqueue_FIELD_DRIVER_DESC"
+                >
+                    <option value="database">PLG_SYSTEM_flexqueue_FIELD_DRIVER_DATABASE</option>
+                    <option value="redis">PLG_SYSTEM_flexqueue_FIELD_DRIVER_REDIS</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>
+
