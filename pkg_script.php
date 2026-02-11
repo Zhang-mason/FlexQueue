@@ -55,6 +55,12 @@ return new class () implements ServiceProviderInterface {
             public function uninstall(InstallerAdapter $parent): bool
             {
                 $this->app->enqueueMessage('Successful uninstalled.');
+                try {
+                    $this->db->dropTable('#__flexqueue_jobs');
+                    $this->db->dropTable('#__flexqueue_job_errors');
+                } catch (\Exception $e) {
+                    $this->app->enqueueMessage('DB cleanup failed: ' . $e->getMessage(), 'error');
+                }
                 $file = JPATH_CLI . '/QueueDaemon.php';
                 if (file_exists($file)) {
                     try {

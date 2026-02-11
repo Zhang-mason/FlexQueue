@@ -7,14 +7,12 @@ namespace Mason\FlexQueue\Contracts;
 interface QueueDriverInterface
 {
     /**
-     * @param JobInterface $jobInterface
+     * @param BaseJob $job
      */
-    public function push(JobInterface $jobInterface): void;
+    public function push(BaseJob $job): void;
 
     /**
      * @return array<string,mixed>|null
      */
     public function consume(): ?array;
 }
-
-

@@ -2,7 +2,7 @@
 <extension type="package" version="4.0" method="upgrade">
 	<name>pkg_FlexQueue</name>
 	<packagename>FlexQueue</packagename>
-	<version>0.1.0</version>
+	<version>0.1.2</version>
 	<creationDate>2025-10-25</creationDate>
 	<author>Mason</author>
 	<copyright>Copyright (c)</copyright>
