@@ -22,6 +22,10 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
 {
     // Set the name of the application
     public $name = 'QueueDaemon';
+    /**
+     * @var \Mason\FlexQueue\Support\QueueManager
+     */
+    public $queueManager;
 
     public function __construct()
     {
@@ -47,6 +51,9 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
         $this->getContainer()->registerServiceProvider(
             new Mason\FlexQueue\Service\QueueProvider($config)
         );
+        $this->queueManager = $this->getContainer()->get(
+            \Mason\FlexQueue\Support\QueueManager::class
+        );
     }
 
     // This function needs to be implemented since it's required by the CMSApplicationInterface  
@@ -58,16 +65,8 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
     // This function holds our business logic
     public function doExecute()
     {
-        $this->out('Executing QueueDaemon...');
-
-        /**
-         * @var \Mason\FlexQueue\Support\QueueManager
-         */
-        $QueueManager = $this->getContainer()->get(
-            \Mason\FlexQueue\Support\QueueManager::class
-        );
         try {
-            $QueueManager->consume();
+            $this->queueManager->consume();
         } catch (\Throwable $th) {
             $this->logger->error('Error during consuming queue: ' . $th->getMessage());
         }
