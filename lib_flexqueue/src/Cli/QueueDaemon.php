@@ -34,7 +34,7 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
         parent::__construct(null, $config);
         $driverConfig = $this->input->get('driver', 'database');
         if (!in_array($driverConfig, ['redis', 'rabbitmq', 'database'])) {
-            $this->out('Driver is valid: ' . $driverConfig);
+            $this->out('Driver is invalid: ' . $driverConfig);
             $this->stop();
         }
         $config = new \Joomla\Registry\Registry(
@@ -66,8 +66,6 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
         $QueueManager = $this->getContainer()->get(
             \Mason\FlexQueue\Support\QueueManager::class
         );
-        $this->out('QueueManager from container: ' . get_class($QueueManager));
-        $this->out('QueueManager driver: ' . get_class($QueueManager->getDriver()));
         try {
             $QueueManager->consume();
         } catch (\Throwable $th) {
