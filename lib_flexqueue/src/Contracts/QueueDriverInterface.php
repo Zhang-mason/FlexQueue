@@ -12,7 +12,7 @@ interface QueueDriverInterface
     public function push(BaseJob $job): void;
 
     /**
-     * @return array<string,mixed>|null
+     * @return void
      */
-    public function consume(): ?array;
+    public function consume(): void;
 }
