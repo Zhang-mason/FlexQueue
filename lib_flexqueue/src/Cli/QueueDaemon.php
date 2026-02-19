@@ -2,6 +2,10 @@
 <?php
 
 // We need to classify this script as Joomla entry point
+
+use Joomla\CMS\Extension\ExtensionHelper;
+use Joomla\Registry\Registry;
+
 define('_JEXEC', 1);
 
 // Set the Joomla basepath one folder up relative to our current directory /cli
@@ -30,30 +34,12 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
     public function __construct()
     {
         // Load the configuration
-        $config = new \Joomla\Registry\Registry(new \JConfig());
+        $config = new Registry(new \JConfig());
 
         // We set the `pid file` manually but should be done in the configuration.php 
         $config->set('application_pid_file', '/run/QueueDaemon.pid');
 
         parent::__construct(null, $config);
-        $driverConfig = $this->input->get('driver', 'database');
-        if (!in_array($driverConfig, ['redis', 'rabbitmq', 'database'])) {
-            $this->out('Driver is invalid: ' . $driverConfig);
-            $this->stop();
-        }
-        $config = new \Joomla\Registry\Registry(
-            [
-                'flexqueue' => [
-                    'driver' => $driverConfig,
-                ],
-            ]
-        );
-        $this->getContainer()->registerServiceProvider(
-            new Mason\FlexQueue\Service\QueueProvider($config)
-        );
-        $this->queueManager = $this->getContainer()->get(
-            \Mason\FlexQueue\Support\QueueManager::class
-        );
     }
 
     // This function needs to be implemented since it's required by the CMSApplicationInterface  
@@ -66,12 +52,33 @@ class QueueDaemon extends \Joomla\CMS\Application\DaemonApplication
     public function doExecute()
     {
         try {
+            if (!$this->queueManager) {
+                $this->initializeQueueManager();
+            }
             $this->queueManager->consume();
         } catch (\Throwable $th) {
-            $this->logger->error('Error during consuming queue: ' . $th->getMessage());
+            $this->out('Error during consuming queue: ' . $th->getMessage());
+            $this->stop();
         }
     }
-}
+    private function initializeQueueManager(): void
+    {
+        $plugin = ExtensionHelper::getExtensionRecord('flexqueue', 'plugin', null, 'system');
 
+        if (!$plugin || !$plugin->enabled) {
+            throw new \RuntimeException('FlexQueue plugin not found or disabled');
+        }
+
+        $params = new Registry($plugin->params);
+
+        $this->getContainer()->registerServiceProvider(
+            new Mason\FlexQueue\Service\QueueProvider($params)
+        );
+
+        $this->queueManager = $this->getContainer()->get(
+            \Mason\FlexQueue\Support\QueueManager::class
+        );
+    }
+}
 // Run the application
 \Joomla\CMS\Application\DaemonApplication::getInstance('QueueDaemon')->execute();

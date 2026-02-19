@@ -20,9 +20,9 @@ return new class() implements ServiceProviderInterface {
                 $dispatcher = $container->get(DispatcherInterface::class);
                 $plugin = new FlexQueue(
                     $dispatcher,
-                    (array) PluginHelper::getPlugin('system', 'flexqueue'),
-                    Factory::getApplication()
+                    (array) PluginHelper::getPlugin('system', 'flexqueue')
                 );
+                $plugin->setApplication(Factory::getApplication());
                 $plugin->setDatabase($container->get(DatabaseInterface::class));
                 return $plugin;
             }

@@ -2,7 +2,7 @@
 <extension type="library" method="upgrade">
     <name>FlexQueue</name>
     <libraryname>lib_flexqueue</libraryname>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <author>Mason</author>
     <creationDate>2025-10-25</creationDate>
     <description>Pluggable queue library for Joomla.</description>
