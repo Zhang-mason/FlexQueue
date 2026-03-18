@@ -1,0 +1,13 @@
+{
+  "name": "libqueuex-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0",
+    "joomla-cypress": "^1.1.0"
+  }
+}

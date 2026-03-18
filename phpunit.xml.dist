@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="tests/unit/bootstrap.php"
+    colors="true"
+    cacheResult="false"
+>
+    <testsuites>
+        <testsuite name="LibQueueX Unit">
+            <directory suffix="Test.php">tests/unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">lib_flexqueue/src</directory>
+        </include>
+    </coverage>
+</phpunit>
