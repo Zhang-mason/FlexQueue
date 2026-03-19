@@ -13,9 +13,32 @@ final class QueueManagerTest extends TestCase
 {
     public function testDispatchCallsDriverPush(): void
     {
-        $driver = new SpyDriver();
+        $driver = new class () implements QueueDriverInterface {
+            public int $pushCalled = 0;
+            public ?BaseJob $lastPushedJob = null;
+
+            public function push(BaseJob $job): void
+            {
+                $this->pushCalled++;
+                $this->lastPushedJob = $job;
+            }
+
+            public function pop(): ?BaseJob
+            {
+                return null;
+            }
+
+            public function handleError(BaseJob $job, \Throwable $th): void
+            {
+            }
+        };
+
         $manager = new QueueManager($driver);
-        $job = new QueueManagerFakeJob();
+        $job = new class () extends BaseJob {
+            public function handle(): void
+            {
+            }
+        };
 
         $manager->dispatch($job);
 
@@ -23,55 +46,135 @@ final class QueueManagerTest extends TestCase
         self::assertSame($job, $driver->lastPushedJob);
     }
 
-    public function testConsumeCallsDriverConsume(): void
+    public function testConsumePopsJobAndRunsIt(): void
     {
-        $driver = new SpyDriver();
+        $job = new class () extends BaseJob {
+            public int $handleCalled = 0;
+
+            public function handle(): void
+            {
+                $this->handleCalled++;
+            }
+        };
+
+        $driver = new class ($job) implements QueueDriverInterface {
+            public int $popCalled = 0;
+            public int $handleErrorCalled = 0;
+            public BaseJob $nextJob;
+
+            public function __construct(BaseJob $nextJob)
+            {
+                $this->nextJob = $nextJob;
+            }
+
+            public function push(BaseJob $job): void
+            {
+            }
+
+            public function pop(): ?BaseJob
+            {
+                $this->popCalled++;
+
+                return $this->nextJob;
+            }
+
+            public function handleError(BaseJob $job, \Throwable $th): void
+            {
+                $this->handleErrorCalled++;
+            }
+        };
+
         $manager = new QueueManager($driver);
 
         $manager->consume();
 
-        self::assertSame(1, $driver->consumeCalled);
+        self::assertSame(1, $driver->popCalled);
+        self::assertSame(1, $job->handleCalled);
+        self::assertSame(0, $driver->handleErrorCalled);
     }
 
-    public function testConsumeSwallowsDriverException(): void
+    public function testConsumeReturnsWhenNoJob(): void
     {
-        $driver = new SpyDriver();
-        $driver->throwOnConsume = true;
+        $driver = new class () implements QueueDriverInterface {
+            public int $popCalled = 0;
+            public int $handleErrorCalled = 0;
+
+            public function push(BaseJob $job): void
+            {
+            }
+
+            public function pop(): ?BaseJob
+            {
+                $this->popCalled++;
+
+                return null;
+            }
+
+            public function handleError(BaseJob $job, \Throwable $th): void
+            {
+                $this->handleErrorCalled++;
+            }
+        };
+
         $manager = new QueueManager($driver);
 
         $manager->consume();
 
-        self::assertSame(1, $driver->consumeCalled);
-        self::assertTrue(true);
-    }
-}
-
-final class SpyDriver implements QueueDriverInterface
-{
-    public int $pushCalled = 0;
-    public int $consumeCalled = 0;
-    public bool $throwOnConsume = false;
-    public ?BaseJob $lastPushedJob = null;
-
-    public function push(BaseJob $job): void
-    {
-        $this->pushCalled++;
-        $this->lastPushedJob = $job;
+        self::assertSame(1, $driver->popCalled);
+        self::assertSame(0, $driver->handleErrorCalled);
     }
 
-    public function consume(): void
+    public function testConsumeCallsHandleErrorWhenJobThrows(): void
     {
-        $this->consumeCalled++;
+        $job = new class () extends BaseJob {
+            public int $handleCalled = 0;
 
-        if ($this->throwOnConsume) {
-            throw new \RuntimeException('consume failed');
-        }
-    }
-}
+            public function handle(): void
+            {
+                $this->handleCalled++;
+                throw new \RuntimeException('job failed');
+            }
+        };
 
-final class QueueManagerFakeJob extends BaseJob
-{
-    public function handle(): void
-    {
+        $driver = new class ($job) implements QueueDriverInterface {
+            public int $popCalled = 0;
+            public int $handleErrorCalled = 0;
+            public ?BaseJob $lastErroredJob = null;
+            public ?\Throwable $lastError = null;
+            public BaseJob $nextJob;
+
+            public function __construct(BaseJob $nextJob)
+            {
+                $this->nextJob = $nextJob;
+            }
+
+            public function push(BaseJob $job): void
+            {
+            }
+
+            public function pop(): ?BaseJob
+            {
+                $this->popCalled++;
+
+                return $this->nextJob;
+            }
+
+            public function handleError(BaseJob $job, \Throwable $th): void
+            {
+                $this->handleErrorCalled++;
+                $this->lastErroredJob = $job;
+                $this->lastError = $th;
+            }
+        };
+
+        $manager = new QueueManager($driver);
+
+        $manager->consume();
+
+        self::assertSame(1, $driver->popCalled);
+        self::assertSame(1, $job->handleCalled);
+        self::assertSame(1, $driver->handleErrorCalled);
+        self::assertSame($job, $driver->lastErroredJob);
+        self::assertInstanceOf(\RuntimeException::class, $driver->lastError);
     }
 }
