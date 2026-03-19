@@ -1,4 +1,6 @@
 import { defineConfig } from 'cypress';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default defineConfig({
   fixturesFolder: 'tests/cypress/fixtures',
@@ -14,7 +16,7 @@ export default defineConfig({
     supportFile: 'tests/cypress/support/index.js',
     scrollBehavior: 'center'
   },
-  env: {
+  expose: {
     username: process.env.CYPRESS_ADMIN_USER || '',
     password: process.env.CYPRESS_ADMIN_PASSWORD || ''
   }

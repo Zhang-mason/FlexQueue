@@ -19,7 +19,6 @@ final class FlexQueue extends CMSPlugin implements SubscriberInterface
     {
         return [
             'onAfterInitialise' => 'setQueueDriver',
-            'onAjaxFlexQueue' => 'handleAjaxRequest',
         ];
     }
 
@@ -28,16 +27,5 @@ final class FlexQueue extends CMSPlugin implements SubscriberInterface
         $container = Factory::getContainer();
         $params = $this->params;
         $container->registerServiceProvider(new QueueProvider($params));
-    }
-    public function handleAjaxRequest()
-    {
-        /**
-         * @var \Mason\FlexQueue\Support\QueueManager $QueueManager
-         */
-        $QueueManager = Factory::getContainer()->get(
-            \Mason\FlexQueue\Support\QueueManager::class
-        );
-        $hellow = new HellowWorld();
-        $QueueManager->dispatch($hellow);
     }
 }
