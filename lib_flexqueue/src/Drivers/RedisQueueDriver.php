@@ -31,33 +31,25 @@ final class RedisQueueDriver implements QueueDriverInterface
         $this->_redis->rPush($queueKey, $data);
     }
 
-    public function consume(): void
+    public function pop(): ?BaseJob
     {
         $queue = 'default';
         $queueKey = $this->getQueueKey($queue);
 
         // Use blPop to wait up to 60 seconds.
-        $result = $this->_redis->blPop($queueKey, 60);
+        $result = $this->_redis->blPop($queueKey);
 
         if (!$result || !isset($result[1])) {
-            return;
+            return null;
         }
 
         $payload = $result[1];
+        $job = unserialize($payload);
 
-        try {
-            $job = unserialize($payload);
-
-            if (!$job instanceof BaseJob) {
-                throw new \RuntimeException('Invalid job payload');
-            }
-
-            // Run the job.
-            $job->run();
-        } catch (\Throwable $e) {
-            // Record the error in Redis.
-            $this->handleException($e, $payload, $queue);
+        if (!$job instanceof BaseJob) {
+            throw new \RuntimeException('Invalid job payload');
         }
+        return $job;
     }
 
     /**
@@ -113,8 +105,10 @@ final class RedisQueueDriver implements QueueDriverInterface
     /**
      * Handle a job failure.
      */
-    private function handleException(\Throwable $e, string $payload, string $queue): void
+    public function handleError(BaseJob $job, \Throwable $e): void
     {
+        $queue = $job->getQueue();
+        $payload = serialize($job);
         $errorKey = 'flexqueue:errors:' . $queue;
         $errorData = [
             'error_message' => $e->__toString(),

@@ -35,7 +35,7 @@ final class DatabaseQueueDriver implements QueueDriverInterface
         $db->insertObject('#__flexqueue_jobs', $message);
     }
 
-    public function consume(): void
+    public function pop(): ?BaseJob
     {
         $db = $this->getDatabase();
         $now = Factory::getDate('now', 'Asia/Taipei');
@@ -65,19 +65,12 @@ final class DatabaseQueueDriver implements QueueDriverInterface
             }
             $this->deleteJob((int) $jobData->id);
             $db->transactionCommit();
+            return $job;
         } catch (\Throwable $e) {
             $db->transactionRollback();
             throw $e;
         } finally {
             $db->unlockTables();
-        }
-        if ($job === null || $jobData === null) {
-            return;
-        }
-        try {
-            $job->run();
-        } catch (\Throwable $e) {
-            $this->handleException($e, $job, (int) $jobData->id);
         }
     }
     private function getWorkerId(): string
@@ -89,11 +82,11 @@ final class DatabaseQueueDriver implements QueueDriverInterface
         $pid = getmypid();
         return sprintf('%s:%s', $host ?: 'worker', $pid ?: '0');
     }
-    private function handleException(\Throwable $e, BaseJob $job, int $id): void
+    public function handleError(BaseJob $job, \Throwable $e): void
     {
         $error = new stdClass();
         $error->error_message = $e->__toString();
-        $error->job_id = $id;
+        $error->job_id = $job->getId();
         $error->queue = $job->getQueue();
         $error->payload = serialize($job);
         $error->error_at = Factory::getDate('now', 'Asia/Taipei')->toSql(true);
