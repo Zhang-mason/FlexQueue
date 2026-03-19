@@ -57,7 +57,7 @@ final class DatabaseQueueDriver implements QueueDriverInterface
             $jobData = $db->setQuery($query)->loadObject();
             if (!$jobData) {
                 $db->transactionCommit();
-                throw new \RuntimeException('No job available');
+                return null;
             }
             $job = unserialize((string) $jobData->payload);
             if (!$job instanceof BaseJob) {

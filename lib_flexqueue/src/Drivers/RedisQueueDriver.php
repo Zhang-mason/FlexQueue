@@ -36,8 +36,7 @@ final class RedisQueueDriver implements QueueDriverInterface
         $queue = 'default';
         $queueKey = $this->getQueueKey($queue);
 
-        // Use blPop to wait up to 60 seconds.
-        $result = $this->_redis->blPop($queueKey);
+        $result = $this->_redis->lPop($queueKey);
 
         if (!$result || !isset($result[1])) {
             return null;

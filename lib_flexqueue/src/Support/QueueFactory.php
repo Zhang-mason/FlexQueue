@@ -16,7 +16,8 @@ final class QueueFactory
      * @param Registry $config
      */
     public function getDriver(string $driverName, Registry $config): QueueDriverInterface
-    {   $configure = $config->toArray();
+    {
+        $configure = $config->toArray();
         return match ($driverName) {
             'redis' => new RedisQueueDriver($configure),
             'database' => new DatabaseQueueDriver($configure),
