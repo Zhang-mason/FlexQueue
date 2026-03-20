@@ -14,7 +14,7 @@
         <sha256>19c548807a39f1cca3a9deb903db9a0c061994193dff0e933580671ceef156e9</sha256>
 		<php_minimum>8.1</php_minimum>
 	</update>
-		<update>
+	<update>
 		<name>FlexQueue</name>
 		<description>FlexQueue package for Joomla</description>
 		<element>pkg_FlexQueue</element>
@@ -27,6 +27,21 @@
 		</downloads>
 		<targetplatform name="joomla" version="((4\.4)|(5\.(0|1|2|3|4)))" />
         <sha256>3c3604467305b5e006da1defa8687e7a014b109d9ac2d77767e9a4a5e60dd53e</sha256>
+		<php_minimum>8.1</php_minimum>
+	</update>
+		<update>
+		<name>FlexQueue</name>
+		<description>FlexQueue package for Joomla</description>
+		<element>pkg_FlexQueue</element>
+		<type>package</type>
+		<version>0.1.4</version>
+		<client>site</client>
+        <infourl title="FlexQueue Extension Package">https://github.com/Zhang-mason/FlexQueue/releases/tag/v0.1.4</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/Zhang-mason/FlexQueue/releases/download/v0.1.4/pkg_FlexQueue-0.1.4.zip</downloadurl>
+		</downloads>
+		<targetplatform name="joomla" version="((4\.4)|(5\.(0|1|2|3|4)))" />
+        <sha256>675dbb274112d2ade7a7d1e5a875d33b53a0fad60708e6c7e7dc15f90e8e04f9</sha256>
 		<php_minimum>8.1</php_minimum>
 	</update>
 </updates>
