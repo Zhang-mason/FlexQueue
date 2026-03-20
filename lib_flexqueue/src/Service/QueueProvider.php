@@ -44,7 +44,7 @@ class QueueProvider implements ServiceProviderInterface
             QueueDriverInterface::class,
             function (Container $container): QueueDriverInterface {
                 $factory = $container->get(QueueFactory::class);
-                $driver = $this->params->get('flexqueue.driver', 'database');
+                $driver = $this->params->get('driver', 'database');
 
                 return $factory->getDriver($driver, $this->params);
             }

@@ -25,18 +25,19 @@ final class QueueManager
      */
     public function consume(): void
     {
+        $job = $this->driver->pop();
+        if ($job === null) {
+            // No job available, handle accordingly (e.g., sleep or exit)
+            return;
+        }
         try {
-            $this->driver->consume();
+            $job->run();
         } catch (\Throwable $th) {
-            $this->handleError($th);
+            $this->driver->handleError($job, $th);
         }
     }
     public function getDriver(): QueueDriverInterface
     {
         return $this->driver;
-    }
-    private function handleError(\Throwable $th): void
-    {
-        // Handle the error (e.g., log it)
     }
 }

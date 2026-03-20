@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="system" method="upgrade" version="4">
     <name>plg_system_flexqueue</name>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <creationDate>2025-10-02</creationDate>
     <author>Mason</author>
     <description>PLG_SYSTEM_flexqueue_XML_DESCRIPTION</description>
@@ -30,6 +30,38 @@
                     <option value="database">PLG_SYSTEM_flexqueue_FIELD_DRIVER_DATABASE</option>
                     <option value="redis">PLG_SYSTEM_flexqueue_FIELD_DRIVER_REDIS</option>
                 </field>
+            </fieldset>
+            <fieldset name="redis" label="COM_PLUGINS_REDIS_FIELDSET_LABEL">
+                <field
+                    name="redis_host"
+                    type="text"
+                    default="localhost"
+                    label="PLG_SYSTEM_flexqueue_FIELD_REDIS_HOST_LABEL"
+                    description="PLG_SYSTEM_flexqueue_FIELD_REDIS_HOST_DESC"
+                />
+                <field
+                    name="redis_port"
+                    type="number"
+                    default="6379"
+                    label="PLG_SYSTEM_flexqueue_FIELD_REDIS_PORT_LABEL"
+                    description="PLG_SYSTEM_flexqueue_FIELD_REDIS_PORT_DESC"
+                />
+                <field
+                    name="redis_password"
+                    type="password"
+                    filter="raw"
+                    label="PLG_SYSTEM_flexqueue_FIELD_REDIS_PASSWORD_LABEL"
+                    description="PLG_SYSTEM_flexqueue_FIELD_REDIS_PASSWORD_DESC"
+                    autocomplete="off"
+			        lock="true"
+                />
+                <field
+                    name="redis_database"
+                    type="number"
+                    default="0"
+                    label="PLG_SYSTEM_flexqueue_FIELD_REDIS_DATABASE_LABEL"
+                    description="PLG_SYSTEM_flexqueue_FIELD_REDIS_DATABASE_DESC"
+                />
             </fieldset>
         </fields>
     </config>

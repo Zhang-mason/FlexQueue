@@ -10,9 +10,6 @@ interface QueueDriverInterface
      * @param BaseJob $job
      */
     public function push(BaseJob $job): void;
-
-    /**
-     * @return void
-     */
-    public function consume(): void;
+    public function pop(): ?BaseJob;
+    public function handleError(BaseJob $job, \Throwable $th): void;
 }

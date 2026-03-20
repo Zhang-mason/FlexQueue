@@ -17,9 +17,10 @@ final class QueueFactory
      */
     public function getDriver(string $driverName, Registry $config): QueueDriverInterface
     {
+        $configure = $config->toArray();
         return match ($driverName) {
-            'redis' => new RedisQueueDriver($config->get('flexqueue.redis', [])),
-            'database' => new DatabaseQueueDriver($config->get('flexqueue.database', [])),
+            'redis' => new RedisQueueDriver($configure),
+            'database' => new DatabaseQueueDriver($configure),
             default => throw new InvalidArgumentException(sprintf('Unsupported queue driver "%s"', $driverName)),
         };
     }
