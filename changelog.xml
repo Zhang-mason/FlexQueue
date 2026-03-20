@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelogs>
+    <changelog>
+        <element>pkg_FlexQueue</element>
+        <type>package</type>
+        <version>0.1.2</version>
+        <addition>
+            <item>first release</item>
+        </addition>
+    </changelog>
+
+    <changelog>
+        <element>pkg_FlexQueue</element>
+        <type>package</type>
+        <version>0.1.3</version>
+        <addition>
+            <item>updateservers</item>
+        </addition>
+    </changelog>
+    <changelog>
+        <element>pkg_FlexQueue</element>
+        <type>package</type>
+        <version>0.1.4</version>
+        <addition>
+            <item>changelogs</item>
+        </addition>
+    </changelog>
+</changelogs>
