@@ -38,12 +38,11 @@ final class RedisQueueDriver implements QueueDriverInterface
 
         $result = $this->_redis->lPop($queueKey);
 
-        if (!$result || !isset($result[1])) {
+        if (!$result) {
             return null;
         }
 
-        $payload = $result[1];
-        $job = unserialize($payload);
+        $job = unserialize($result);
 
         if (!$job instanceof BaseJob) {
             throw new \RuntimeException('Invalid job payload');
