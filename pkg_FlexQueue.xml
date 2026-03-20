@@ -14,4 +14,7 @@
         <folder type="library" id="lib_flexqueue">lib_flexqueue</folder>
         <folder type="plugin" group="system" id="flexqueue">flexqueue</folder>
 	</files>
+	<updateservers>
+		<server type="extension" name="FlexQueue Update">https://raw.githubusercontent.com/Zhang-mason/FlexQueue/master/update.xml</server>
+	</updateservers>
 </extension>
